@@ -94,50 +94,28 @@ class LinkedList {
     }
 
     deleteAt(index) {
-        var currentNode = this._head,
-            _length = this.length,
-            count = 1,
-            message = { failure: 'Failure: non-existent node in this list.' },
-            afterNodeToDelete = null,
-            beforeNodeToDelete = null,
-            nodeToDelete = null,
-            deletedNode = null;
-
-        if (_length === 0 || index < 1 || index > _length) {
-            throw new Error(message.failure);
-        }
-
-        if (index === 1) {
-            this._head = currentNode.next;
-
-            if (!this._head) {
-                this._head.previous = null;
+        let curNd = this._head;
+        for (let i = 0; i < this.length; i++) {
+            if (i === index) {
+                if (curNd.next === null) {
+                    curNd.prev.next = null;
+                    this._tail = curNd.prev;
+                } else if (curNd.prev === null) {
+                    this._head = curNd.next;
+                    curNd.next.prev = null;
+                } else {
+                    curNd.next.prev = curNd.prev;
+                    curNd.prev.next = curNd.next;
+                    curNd.next = null;
+                    curNd.prev = null;
+                }
+                this.length--;
+                return;
             } else {
-                this._tail = null;
+                curNd = curNd.next;
             }
-
-        } else if (index === _length) {
-            this._tail = this._tail.previous;
-            this._tail.next = null;
-        } else {
-            while (count < index) {
-                currentNode = currentNode.next;
-                count++;
-            }
-
-            beforeNodeToDelete = currentNode.previous;
-            nodeToDelete = currentNode;
-            afterNodeToDelete = currentNode.next;
-
-            beforeNodeToDelete.next = afterNodeToDelete;
-            afterNodeToDelete.previous = beforeNodeToDelete;
-            deletedNode = nodeToDelete;
-            nodeToDelete = null;
         }
 
-        this.length--;
-
-        return message.success;
     }
 
     reverse() {}
